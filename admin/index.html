@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel Administrativo | Barbería Javs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./admin-styles.css" />
+    <!-- Añadir Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <h1>JAVS</h1>
+        <p>Admin Panel</p>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#" class="nav-item active" data-section="reservaciones">
+          <span class="icon">📅</span>
+          <span>Reservaciones</span>
+        </a>
+        <a href="#" class="nav-item" data-section="servicios">
+          <span class="icon">✂️</span>
+          <span>Servicios</span>
+        </a>
+        <a href="#" class="nav-item" data-section="galeria">
+          <span class="icon">🖼️</span>
+          <span>Galería</span>
+        </a>
+        <a href="#" class="nav-item" data-section="usuarios">
+          <span class="icon">👥</span>
+          <span>Usuarios</span>
+        </a>
+        <a href="#" class="nav-item" data-section="perfil">
+          <span class="icon">⚙️</span>
+          <span>Mi Perfil</span>
+        </a>
+      </nav>
+
+      <button class="logout-btn" id="logoutBtn">
+        <span class="icon">🚪</span>
+        <span>Cerrar Sesión</span>
+      </button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="top-bar">
+        <h2 id="sectionTitle">Reservaciones</h2>
+        <div class="user-info">
+          <span id="userName">Cargando...</span>
+        </div>
+      </header>
+
+      <!-- Reservaciones Section -->
+      <section id="reservaciones-section" class="content-section active">
+        <div class="section-header">
+          <p class="section-subtitle">Gestiona las citas de los clientes</p>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Teléfono</th>
+                <th>Servicio</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Precio</th>
+                <th>Atendida</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="reservacionesTableBody">
+              <tr>
+                <td colspan="8" class="loading">Cargando...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Servicios Section -->
+      <section id="servicios-section" class="content-section">
+        <div class="section-header">
+          <p class="section-subtitle">Gestiona los servicios de la barbería</p>
+          <button class="btn btn-primary" id="addServiceBtn">
+            + Agregar Servicio
+          </button>
+        </div>
+
+        <div class="cards-grid" id="serviciosGrid">
+          <div class="loading-card">Cargando servicios...</div>
+        </div>
+      </section>
+
+      <!-- Galería Section -->
+      <section id="galeria-section" class="content-section">
+        <div class="section-header">
+          <p class="section-subtitle">Gestiona las imágenes de la galería</p>
+          <button class="btn btn-primary" id="addGalleryBtn">
+            + Agregar Imagen
+          </button>
+        </div>
+
+        <div class="gallery-grid" id="galeriaGrid">
+          <div class="loading-card">Cargando galería...</div>
+        </div>
+      </section>
+
+      <!-- Usuarios Section -->
+      <section id="usuarios-section" class="content-section">
+        <div class="section-header">
+          <p class="section-subtitle">Gestiona los usuarios administradores</p>
+          <button class="btn btn-primary" id="addUserBtn">
+            + Agregar Usuario
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Fecha Registro</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="usuariosTableBody">
+              <tr>
+                <td colspan="5" class="loading">Cargando...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Perfil Section -->
+      <section id="perfil-section" class="content-section">
+        <div class="section-header">
+          <p class="section-subtitle">Actualiza tu información personal</p>
+        </div>
+
+        <div class="form-container">
+          <form id="perfilForm" class="admin-form" autocomplete="off">
+            <input type="hidden" id="perfilId" name="id" />
+
+            <div class="form-group">
+              <label for="perfilNombre">Nombre Completo</label>
+              <input type="text" id="perfilNombre" name="nombre" required />
+            </div>
+
+            <div class="form-group">
+              <label for="perfilEmail">Email</label>
+              <input type="email" id="perfilEmail" name="email" required />
+            </div>
+
+            <div class="form-group">
+              <label for="perfilTelefono">Teléfono</label>
+              <input type="tel" id="perfilTelefono" name="telefono" />
+            </div>
+
+            <div class="form-group">
+              <label for="perfilPassword"
+                >Nueva Contraseña (dejar en blanco para mantener la
+                actual)</label
+              >
+              <input type="password" id="perfilPassword" name="password" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              Actualizar Perfil
+            </button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <button class="modal-close" id="modalClose">&times;</button>
+        <h3 id="modalTitle">Modal</h3>
+        <div id="modalBody"></div>
+      </div>
+    </div>
+
+    <script src="./admin-script.js"></script>
+  </body>
+</html>
